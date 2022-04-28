@@ -15,6 +15,7 @@
         "symfony/yaml": "6.0.*"
     },
     "require-dev": {
+        "squizlabs/php_codesniffer": "3.*"
     },
     "config": {
         "allow-plugins": {
