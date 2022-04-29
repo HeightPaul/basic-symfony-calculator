@@ -26,17 +26,8 @@ class CalculatorController extends AbstractController
             return $this->redirectToRoute('calculator_success');
         }
 
-        return $this->renderForm('Calculator/new.html.twig', [
+        return $this->renderForm('Calculator/index.html.twig', [
             'form' => $form,
-        ]);
-
-        // $calculator->setFirstNumber(1);
-        // $calculator->setType(Calculator::PLUS);
-        // $calculator->setSecondNumber(2);
-
-        $form = $this->createFormBuilder($calculator)->getForm();
-        return $this->render('Calculator/new.html.twig', [
-            'form' => $form->createView(),
         ]);
     }
 }
