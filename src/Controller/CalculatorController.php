@@ -3,19 +3,16 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * Controller for calculator actions
- */
 class CalculatorController extends AbstractController
 {
-    /**
-     * @Route("/calculator", name="calculator_index")
-     */
-    public function index(): void
+    #[Route('/calculator', name: 'app_calculator')]
+    public function index(): Response
     {
-        var_dump('bravo');
-        exit;
+        return $this->render('conference/index.html.twig', [
+            'controller_name' => 'ConferenceController',
+        ]);
     }
 }
