@@ -4,14 +4,20 @@ namespace App\Controller;
 
 use App\Entity\Calculator;
 use App\Form\Type\CalculatorType;
+use App\Service\CalculatorService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 class CalculatorController extends AbstractController
 {
-    #[Route('/calculator', name: 'app_calculator')]
+    private CalculatorService $calculatorService;
+
+    public function __construct(CalculatorService $calculatorService)
+    {
+        $this->calculatorService = $calculatorService;
+    }
+
     public function index(Request $request): Response
     {
         $calculator = new Calculator();
@@ -19,15 +25,11 @@ class CalculatorController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // $form->getData() holds the submitted values
-            // but, the original `$task` variable has also been updated
             $calculator = $form->getData();
-
-            return $this->redirectToRoute('calculator_success');
+            $view['calculation'] = $this->calculatorService->getCalculation($calculator);
         }
+        $view['form'] = $form;
 
-        return $this->renderForm('Calculator/index.html.twig', [
-            'form' => $form,
-        ]);
+        return $this->renderForm('Calculator/index.html.twig', $view);
     }
 }

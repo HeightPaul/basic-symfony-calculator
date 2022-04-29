@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 class Calculator
 {
     public const PLUS = '+';
@@ -9,16 +11,29 @@ class Calculator
     public const MULTIPLICATION = '*';
     public const DIVISION = '/';
 
-    protected int $firstNumber;
-    protected string $type;
-    protected int $secondNumber;
+    /**
+     * @Assert\NotBlank
+     * @Assert\Type("float")
+     */
+    private float $firstNumber;
 
-    public function getFirstNumber(): int
+    /**
+     * @Assert\NotBlank
+     */
+    private string $type;
+
+    /**
+     * @Assert\NotBlank
+     * @Assert\Type("float")
+     */
+    private float $secondNumber;
+
+    public function getFirstNumber(): float
     {
         return $this->firstNumber;
     }
 
-    public function setFirstNumber(int $firstNumber): void
+    public function setFirstNumber(float $firstNumber): void
     {
         $this->firstNumber = $firstNumber;
     }
@@ -33,12 +48,12 @@ class Calculator
         $this->type = $type;
     }
 
-    public function getSecondNumber(): int
+    public function getSecondNumber(): float
     {
         return $this->secondNumber;
     }
 
-    public function setSecondNumber(int $secondNumber): void
+    public function setSecondNumber(float $secondNumber): void
     {
         $this->secondNumber = $secondNumber;
     }
