@@ -18,9 +18,8 @@ class CalculatorController extends AbstractController
         $this->calculatorService = $calculatorService;
     }
 
-    public function index(Request $request): Response
+    public function index(Request $request, Calculator $calculator): Response
     {
-        $calculator = new Calculator();
         $form = $this->createForm(CalculatorType::class, $calculator);
 
         $form->handleRequest($request);
