@@ -25,7 +25,8 @@ class CalculatorController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $calculator = $form->getData();
-            $view['calculation'] = $this->calculatorService->getCalculation($calculator);
+            [$calculation, $form] = $this->calculatorService->getCalculationWithForm($calculator, $form);
+            $view['calculation'] = $calculation;
         }
         $view['form'] = $form;
 

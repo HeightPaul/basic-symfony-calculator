@@ -5,12 +5,14 @@ namespace App\Tests\Unit\Service;
 use App\Entity\Calculator;
 use App\Service\CalculatorService;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Form\Form;
 
 class CalculatorServiceTest extends TestCase
 {
     public function testGetCalculationWithAllTypes(): void
     {
         foreach (self::getPreparedValues() as $value) {
+            $form = $this->createMock(Form::class);
             $calculator = $this->createMock(Calculator::class);
             $calculator->expects($this->once())
                        ->method('setFirstNumber');
@@ -20,14 +22,14 @@ class CalculatorServiceTest extends TestCase
                        ->method('setSecondNumber');
             $calculatorService = $this->createMock(CalculatorService::class);
             $calculatorService->expects($this->once())
-                              ->method('getCalculation')
-                              ->with($calculator)
-                              ->willReturn($value['calculation']);
+                              ->method('getCalculationWithForm')
+                              ->with($calculator, $form)
+                              ->willReturn([$value['calculation'], $form]);
             $calculator->setFirstNumber($value['firstNumber']);
             $calculator->setType($value['type']);
             $calculator->setSecondNumber($value['secondNumber']);
-            $calculation = $calculatorService->getCalculation($calculator);
-            self::assertEquals($value['calculation'], $calculation);
+            [$calculation, $form] = $calculatorService->getCalculationWithForm($calculator, $form);
+            self::assertEquals([$value['calculation'], $form], [$calculation, $form]);
         }
     }
 

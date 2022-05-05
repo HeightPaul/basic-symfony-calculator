@@ -25,9 +25,7 @@ class CalculatorType extends AbstractType
                 ],
             ])
             ->add('secondNumber', NumberType::class)
-            ->add('calculate', SubmitType::class, [
-                // 'attr' => ['class' => 'test'],
-            ]);
+            ->add('calculate', SubmitType::class);
         ;
     }
 
