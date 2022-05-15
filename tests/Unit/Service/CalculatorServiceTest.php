@@ -13,22 +13,12 @@ class CalculatorServiceTest extends TestCase
     {
         foreach (self::getPreparedValues() as $value) {
             $form = $this->createMock(Form::class);
-            $calculator = $this->createMock(Calculator::class);
-            $calculator->expects($this->once())
-                       ->method('setFirstNumber');
-            $calculator->expects($this->once())
-                       ->method('setType');
-            $calculator->expects($this->once())
-                       ->method('setSecondNumber');
             $calculatorService = $this->createMock(CalculatorService::class);
             $calculatorService->expects($this->once())
                               ->method('getCalculationWithForm')
-                              ->with($calculator, $form)
+                              ->with($form)
                               ->willReturn([$value['calculation'], $form]);
-            $calculator->setFirstNumber($value['firstNumber']);
-            $calculator->setType($value['type']);
-            $calculator->setSecondNumber($value['secondNumber']);
-            [$calculation, $form] = $calculatorService->getCalculationWithForm($calculator, $form);
+            [$calculation, $form] = $calculatorService->getCalculationWithForm($form);
             self::assertEquals([$value['calculation'], $form], [$calculation, $form]);
         }
     }

@@ -28,12 +28,12 @@ class CalculatorService implements CalculatorServiceInterface
         $this->form = $form;
     }
 
-    public function getCalculationWithForm(Calculator $calculator, Form $form): array
+    public function getCalculationWithForm(Form $form): array
     {
         $this->postConstruct($form);
         $calculation = null;
         try {
-            if (in_array($calculator->getType(), $this->entityConstants)) {
+            if (in_array($this->calculator->getType(), $this->entityConstants)) {
                 $fullMethodTypeName = $this->getFullMethodTypeName();
                 $calculation = $this->$fullMethodTypeName();
             } else {
