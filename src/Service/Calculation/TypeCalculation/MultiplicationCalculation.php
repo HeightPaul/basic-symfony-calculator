@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Service\TypeCalculation;
+namespace App\Service\Calculation\TypeCalculation;
 
 use App\Entity\Calculator;
+use App\Service\Calculation\TypeCalculationInterface;
 
 class MultiplicationCalculation implements TypeCalculationInterface
 {

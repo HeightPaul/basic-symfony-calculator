@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\TypeCalculation;
+namespace App\Service\Calculation;
 
 use App\Entity\Calculator;
 

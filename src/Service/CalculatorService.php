@@ -3,28 +3,29 @@
 namespace App\Service;
 
 use App\Entity\Calculator;
-use App\Form\FormErrorHandler;
-use App\Service\TypeCalculation\TypeCalculationFactory;
+use App\Service\Calculation\TypeCalculationFactory;
+use App\Form\FormErrorHandler\CalculatorFormErrorHandler;
 use ArithmeticError;
-use DivisionByZeroError;
-use ReflectionClass;
 use Symfony\Component\Form\Form;
 
 class CalculatorService
 {
-    private array $entityConstants;
     private Calculator $calculator;
-    private FormErrorHandler $formErrorHandler;
+    private TypeCalculationFactory $typeCalculationFactory;
+    private CalculatorFormErrorHandler $calculatorFormErrorHandler;
     private Form $form;
 
-    public function __construct(Calculator $calculator, FormErrorHandler $formErrorHandler)
-    {
+    public function __construct(
+        Calculator $calculator,
+        TypeCalculationFactory $typeCalculationFactory,
+        CalculatorFormErrorHandler $calculatorFormErrorHandler
+    ) {
         $this->calculator = $calculator;
-        $this->formErrorHandler = $formErrorHandler;
-        $this->entityConstants = (new ReflectionClass(Calculator::class))->getConstants();
+        $this->typeCalculationFactory = $typeCalculationFactory;
+        $this->calculatorFormErrorHandler = $calculatorFormErrorHandler;
     }
 
-    public function postConstruct(Form $form)
+    public function postConstruct(Form $form): void
     {
         $this->form = $form;
     }
@@ -34,26 +35,12 @@ class CalculatorService
         $this->postConstruct($form);
         $calculation = null;
         try {
-            if (in_array($this->calculator->getType(), $this->entityConstants)) {
-                $typeCalculation = TypeCalculationFactory::create($this->entityConstants, $this->calculator->getType());
-                $calculation = $typeCalculation->get($this->calculator);
-            } else {
-                throw new ArithmeticError('Missing calculation type');
-            }
+            $typeCalculation = $this->typeCalculationFactory->create($this->calculator->getType());
+            $calculation = $typeCalculation->get($this->calculator);
         } catch (ArithmeticError $exception) {
-            $this->setErrorMessageByExceptionClass($exception);
+            $this->calculatorFormErrorHandler->setErrorMessage($this->form, $exception);
         }
 
         return [$calculation, $this->form];
-    }
-
-
-    private function setErrorMessageByExceptionClass(ArithmeticError $exception): void
-    {
-        if ($exception instanceof DivisionByZeroError) {
-            $this->formErrorHandler->setErrorMessage($this->form, $exception, 'secondNumber');
-        } else {
-            $this->formErrorHandler->setErrorMessage($this->form, $exception);
-        }
     }
 }
