@@ -4,12 +4,13 @@ namespace App\Service;
 
 use App\Entity\Calculator;
 use App\Form\FormErrorHandler;
+use App\Service\TypeCalculation\TypeCalculationFactory;
 use ArithmeticError;
 use DivisionByZeroError;
 use ReflectionClass;
 use Symfony\Component\Form\Form;
 
-class CalculatorService implements CalculatorServiceInterface
+class CalculatorService
 {
     private array $entityConstants;
     private Calculator $calculator;
@@ -34,8 +35,8 @@ class CalculatorService implements CalculatorServiceInterface
         $calculation = null;
         try {
             if (in_array($this->calculator->getType(), $this->entityConstants)) {
-                $fullMethodTypeName = $this->getFullMethodTypeName();
-                $calculation = $this->$fullMethodTypeName();
+                $typeCalculation = TypeCalculationFactory::create($this->entityConstants, $this->calculator->getType());
+                $calculation = $typeCalculation->get($this->calculator);
             } else {
                 throw new ArithmeticError('Missing calculation type');
             }
@@ -46,32 +47,6 @@ class CalculatorService implements CalculatorServiceInterface
         return [$calculation, $this->form];
     }
 
-    public function getPlusCalculation(): float
-    {
-        return $this->calculator->getFirstNumber() + $this->calculator->getSecondNumber();
-    }
-
-    public function getMinusCalculation(): float
-    {
-        return $this->calculator->getFirstNumber() - $this->calculator->getSecondNumber();
-    }
-
-    public function getMultiplicationCalculation(): float
-    {
-        return $this->calculator->getFirstNumber() * $this->calculator->getSecondNumber();
-    }
-
-    public function getDivisionCalculation(): float
-    {
-        return $this->calculator->getFirstNumber() / $this->calculator->getSecondNumber();
-    }
-
-    private function getFullMethodTypeName(): string
-    {
-        $entityConstantsKeys = array_flip($this->entityConstants);
-        $pascalCaseTypeName = ucfirst(strtolower($entityConstantsKeys[$this->calculator->getType()]));
-        return "get{$pascalCaseTypeName}Calculation";
-    }
 
     private function setErrorMessageByExceptionClass(ArithmeticError $exception): void
     {
